@@ -22,9 +22,26 @@ module top_hw (
                 input  wire         hip_serial_rx_in6,         //           .rx_in6
                 input  wire         hip_serial_rx_in7,         //           .rx_in7
                 input  wire         perstn           ,
-					 output wire         led_o            ,
-					 output wire			dk_alive_led     
+			    output wire         led_o            ,
+			    output wire			dk_alive_led,     
 					 
+	            input  wire		    oct_rzqin,
+	            output wire	        mem_ck,
+	            output wire	        mem_ck_n,
+	            output wire[16:0]	mem_a,
+	            output wire	        mem_act_n,
+	            output wire[1:0]	mem_ba,
+	            output wire	        mem_bg,
+	            output wire	        mem_cke,
+	            output wire	        mem_cs_n,
+	            output wire	        mem_odt,
+	            output wire	        mem_reset_n,
+	            output wire	        mem_par,
+	            input  wire	        mem_alert_n,
+	            inout  wire[8:0]	mem_dqs,
+	            inout  wire[8:0]	mem_dqs_n,
+	            inout  wire[71:0]	mem_dq,
+	            inout  wire[8:0]	mem_dbi_n
 					 	 
         );
 
@@ -270,8 +287,8 @@ top top (
 	          //
 	          .get_cpu_operation_0_conduit_end_start_read_en       (start_read_en                  ),
 				 .get_cpu_operation_0_conduit_end_start_read_en_1     (start_read_en_1                ),
-//	          .get_cpu_operation_0_conduit_end_start_read_en_2     (start_read_en_2                ),
-//				 .get_cpu_operation_0_conduit_end_start_read_en_3     (start_read_en_3                ),
+	          .get_cpu_operation_0_conduit_end_start_read_en_2     (start_read_en_2                ),
+				 .get_cpu_operation_0_conduit_end_start_read_en_3     (start_read_en_3                ),
 
 
 			    // 
@@ -324,21 +341,9 @@ top top (
              .pcie_a10_hip_0_dma_rd_master_write_test_1           (rd_master_write_1              ),
 	          .pcie_a10_hip_0_dma_rd_master_address_test_1  		   (rd_master_address_1            ),			 
 				 //
-             .pcie_a10_hip_0_dma_rd_master_write_test_2           (rd_master_write_2              ),
-	          .pcie_a10_hip_0_dma_rd_master_address_test_2         (rd_master_address_2            ),  	
-             //
-             .pcie_a10_hip_0_dma_rd_master_write_test_3           (rd_master_write_3              ),
-	          .pcie_a10_hip_0_dma_rd_master_address_test_3  		   (rd_master_address_3            ),	         
+          
 			
-		
-	
-             .pcie_a10_hip_0_dma_wr_master_address_test           (wr_master_address              ),  
-	          .pcie_a10_hip_0_dma_wr_master_read_test	            (wr_master_read                 ),
-
-
-             .pcie_a10_hip_0_dma_wr_master_address_test_1           (wr_master_address_1            ),  
-	          .pcie_a10_hip_0_dma_wr_master_read_test_1	            (wr_master_read_1                 ),	
-				 
+						 
 		       //		 	
 		       .ram_s_1_0_read_port_rdclock                         (sys_clk                        ), 						
 			    .ram_s_1_0_read_port_rden                            (s1_0_ram_rden                  ),                               
@@ -350,15 +355,9 @@ top top (
 		       .ram_s_1_1_read_port_q                               (s1_1_ram_rdat                  ),                                      
 		       .ram_s_1_1_read_port_rdaddress  				         (s1_1_ram_raddr                 ), 
 				 //
-		       .ram_s_1_2_read_port_rdclock                         (sys_clk                        ), 						
-			    .ram_s_1_2_read_port_rden                            (s1_2_ram_rden                  ),                               
-		       .ram_s_1_2_read_port_q                               (s1_2_ram_rdat                  ),                  
-		       .ram_s_1_2_read_port_rdaddress                       (s1_2_ram_raddr                 ),
-		       //
-             .ram_s_1_3_read_port_rdclock                         (sys_clk                        ),
-				 .ram_s_1_3_read_port_rden                            (s1_3_ram_rden                  ),                                                                   
-		       .ram_s_1_3_read_port_q                               (s1_3_ram_rdat                  ),                                      
-		       .ram_s_1_3_read_port_rdaddress  				         (s1_3_ram_raddr                 ), 				 
+
+
+			 
 				 
 				 //
 		       .onchip_memory2_2_clk2_clk                           (sys_clk                        ),                         
@@ -445,23 +444,23 @@ ddr4_core  u_ddr4_core (
 	.global_reset_n       (sys_rst_n),
 	.pll_ref_clk          (sys_clk),
     //	
-	input		    oct_rzqin;
-	output	[0:0]	mem_ck;
-	output	[0:0]	mem_ck_n;
-	output	[16:0]	mem_a;
-	output	[0:0]	mem_act_n;
-	output	[1:0]	mem_ba;
-	output	[0:0]	mem_bg;
-	output	[0:0]	mem_cke;
-	output	[0:0]	mem_cs_n;
-	output	[0:0]	mem_odt;
-	output	[0:0]	mem_reset_n;
-	output	[0:0]	mem_par;
-	input	[0:0]	mem_alert_n;
-	inout	[8:0]	mem_dqs;
-	inout	[8:0]	mem_dqs_n;
-	inout	[71:0]	mem_dq;
-	inout	[8:0]	mem_dbi_n;
+	.oct_rzqin            (oct_rzqin  ),     
+	.mem_ck               (mem_ck     ),
+	.mem_ck_n             (mem_ck_n   ),
+	.mem_a                (mem_a      ),
+	.mem_act_n            (mem_act_n  ),
+	.mem_ba               (mem_ba     ),
+	.mem_bg               (mem_bg     ),
+	.mem_cke              (mem_cke    ),
+	.mem_cs_n             (mem_cs_n   ),
+	.mem_odt              (mem_odt    ),
+	.mem_reset_n          (mem_reset_n),
+	.mem_par              (mem_par    ),
+	.mem_alert_n          (mem_alert_n),
+	.mem_dqs              (mem_dqs    ),
+	.mem_dqs_n            (mem_dqs_n  ),
+	.mem_dq               (mem_dq     ),
+	.mem_dbi_n            (mem_dbi_n  ),
 	//
 	.local_cal_success    (ddr_success),
 	.local_cal_fail       (ddr_fail),
@@ -527,106 +526,106 @@ pkt_analysis_top u_pkt_analysis_top(
     .ddr4_rdat_vld            (ddr_read_vld          ),
     .ddr4_rdat                (ddr_rdat              ),
 
-input   wire            matrix_enable_0,
-input   wire            matrix_enable_1,
-input   wire            matrix_enable_2,
-input   wire            matrix_enable_3,
-input   wire            matrix_enable_4,
-input   wire            matrix_enable_5,
-input   wire            matrix_enable_6,
-input   wire            matrix_enable_7,
-input   wire            matrix_enable_8,
-input   wire            matrix_enable_9,
-input   wire            matrix_enable_a,
-input   wire            matrix_enable_b,
-input   wire            matrix_enable_c,
-input   wire            matrix_enable_d,
-input   wire            matrix_enable_e,
-input   wire            matrix_enable_f,
+    .matrix_enable_0          (1                     ),
+    .matrix_enable_1          (1                     ),
+    .matrix_enable_2          (1                     ),
+    .matrix_enable_3          (1                     ),
+    .matrix_enable_4          (1                     ),
+    .matrix_enable_5          (1                     ),
+    .matrix_enable_6          (1                     ),
+    .matrix_enable_7          (1                     ),
+    .matrix_enable_8          (1                     ),
+    .matrix_enable_9          (1                     ),
+    .matrix_enable_a          (1                     ),
+    .matrix_enable_b          (1                     ),
+    .matrix_enable_c          (1                     ),
+    .matrix_enable_d          (1                     ),
+    .matrix_enable_e          (1                     ),
+    .matrix_enable_f          (1                     ),
 
-output  wire            pcie_ram_free,
+    .pcie_ram_free            (),
 
-output  wire            pkt_data_0,
-output  wire            pkt_sop_0, 
-output  wire            pkt_eop_0, 
-output  wire            pkt_vld_0, 
-   
-output  wire            pkt_data_1,
-output  wire            pkt_sop_1, 
-output  wire            pkt_eop_1, 
-output  wire            pkt_vld_1, 
+    .pkt_data_0               (),
+    .pkt_sop_0                (), 
+    .pkt_eop_0                (), 
+    .pkt_vld_0                (), 
+               
+    .pkt_data_1               (),
+    .pkt_sop_1(), 
+    .pkt_eop_1(), 
+    .pkt_vld_1(), 
 
-output  wire            pkt_data_2,
-output  wire            pkt_sop_2, 
-output  wire            pkt_eop_2, 
-output  wire            pkt_vld_2, 
+    .pkt_data_2               (),
+    .pkt_sop_2(), 
+    .pkt_eop_2(), 
+    .pkt_vld_2(), 
 
-output  wire            pkt_data_3,
-output  wire            pkt_sop_3, 
-output  wire            pkt_eop_3, 
-output  wire            pkt_vld_3,    
+    .pkt_data_3                (),
+    .pkt_sop_3(), 
+    .pkt_eop_3(), 
+    .pkt_vld_3(),    
 
-output  wire            pkt_data_4,
-output  wire            pkt_sop_4, 
-output  wire            pkt_eop_4, 
-output  wire            pkt_vld_4, 
-   
-output  wire            pkt_data_5,
-output  wire            pkt_sop_5, 
-output  wire            pkt_eop_5, 
-output  wire            pkt_vld_5, 
+    .pkt_data_4(),
+    .pkt_sop_4(), 
+    .pkt_eop_4(), 
+    .pkt_vld_4(), 
+    
+    .pkt_data_5(),
+    .pkt_sop_5(), 
+    .pkt_eop_5(), 
+    .pkt_vld_5(), 
 
-output  wire            pkt_data_6,
-output  wire            pkt_sop_6, 
-output  wire            pkt_eop_6, 
-output  wire            pkt_vld_6, 
+    .pkt_data_6(),
+    .pkt_sop_6(), 
+    .pkt_eop_6(), 
+    .pkt_vld_6(), 
 
-output  wire            pkt_data_7,
-output  wire            pkt_sop_7, 
-output  wire            pkt_eop_7, 
-output  wire            pkt_vld_7,
+    .pkt_data_7(),
+    .pkt_sop_7(), 
+    .pkt_eop_7(), 
+    .pkt_vld_7(),
 
-output  wire            pkt_data_8,
-output  wire            pkt_sop_8, 
-output  wire            pkt_eop_8, 
-output  wire            pkt_vld_8, 
-   
-output  wire            pkt_data_9,
-output  wire            pkt_sop_9, 
-output  wire            pkt_eop_9, 
-output  wire            pkt_vld_9, 
+    .pkt_data_8(),
+    .pkt_sop_8(), 
+    .pkt_eop_8(), 
+    .pkt_vld_8(), 
+    
+    .pkt_data_9(),
+    .pkt_sop_9(), 
+    .pkt_eop_9(), 
+    .pkt_vld_9(), 
 
-output  wire            pkt_data_a,
-output  wire            pkt_sop_a, 
-output  wire            pkt_eop_a, 
-output  wire            pkt_vld_a, 
+    .pkt_data_a(),
+    .pkt_sop_a(), 
+    .pkt_eop_a(), 
+    .pkt_vld_a(), 
 
-output  wire            pkt_data_b,
-output  wire            pkt_sop_b, 
-output  wire            pkt_eop_b, 
-output  wire            pkt_vld_b,
+    .pkt_data_b(),
+    .pkt_sop_b(), 
+    .pkt_eop_b(), 
+    .pkt_vld_b(),
 
-output  wire            pkt_data_c,
-output  wire            pkt_sop_c, 
-output  wire            pkt_eop_c, 
-output  wire            pkt_vld_c, 
-   
-output  wire            pkt_data_d,
-output  wire            pkt_sop_d, 
-output  wire            pkt_eop_d, 
-output  wire            pkt_vld_d, 
+    .pkt_data_c(),
+    .pkt_sop_c(), 
+    .pkt_eop_c(), 
+    .pkt_vld_c(), 
+    
+    .pkt_data_d(),
+    .pkt_sop_d(), 
+    .pkt_eop_d(), 
+    .pkt_vld_d(), 
 
-output  wire            pkt_data_e,
-output  wire            pkt_sop_e, 
-output  wire            pkt_eop_e, 
-output  wire            pkt_vld_e, 
+    .pkt_data_e(),
+    .pkt_sop_e(), 
+    .pkt_eop_e(), 
+    .pkt_vld_e(), 
 
-output  wire            pkt_data_f,
-output  wire            pkt_sop_f, 
-output  wire            pkt_eop_f, 
-output  wire            pkt_vld_f
+    .pkt_data_f(),
+    .pkt_sop_f(), 
+    .pkt_eop_f(), 
+    .pkt_vld_f()
 
-	
+);	
 	
 	
 	
